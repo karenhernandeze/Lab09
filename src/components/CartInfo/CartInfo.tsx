@@ -1,4 +1,5 @@
-import { Box, Button, Modal, Typography } from "@material-ui/core";
+import { Box, Button, Grid, Modal, Paper, Typography } from "@material-ui/core";
+import React from "react";
 import Cart from "../../types/Cart";
 import "./CartInfo.css";
 
@@ -21,9 +22,36 @@ const style = {
 };
 
 const CartInfo: React.FC<CartInfoProps> = (props) => {
-  var lineItems = 0;
+  var lineItems = [] as any[];
+  console.log(props.cart.lineItems)
   if (props.cart !== undefined && props.cart.lineItems !== undefined) {
-    lineItems = props.cart.getNumberOfItems();
+    props.cart.lineItems.forEach((lineItem) => {
+      lineItems.push(
+        <React.Fragment>
+          <Grid item lg={2}>
+            <Paper className="largeImage">
+              <img
+                src={lineItem.sku.smallImageUrl}
+                alt={lineItem.product.name}
+              />
+            </Paper>
+          </Grid>
+          <Grid item lg={10} container>
+            <Grid item lg={7}>
+              <Typography className="productName">
+                {lineItem.product.name}
+              </Typography>
+            </Grid>
+            <Grid item lg={3}>
+              <Typography className="dollars">{lineItem.totalPrice}</Typography>
+            </Grid>
+            <Grid item lg={2}>
+              <Typography>{lineItem.quantity}</Typography>
+            </Grid>
+          </Grid>
+        </React.Fragment>
+      );
+    });
   }
   return (
     <Modal
@@ -33,7 +61,11 @@ const CartInfo: React.FC<CartInfoProps> = (props) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-description">{lineItems}</Typography>
+        <div className="productPreview">
+          <Grid container className="productGrid" spacing={2}>
+            {lineItems}
+          </Grid>
+        </div>
         <Button
           className="cartButton"
           variant="contained"
